@@ -1,5 +1,5 @@
 import { connectDB } from "@/backend/config/connectDB";
-import { allRooms } from "@/backend/controllers/room";
+import { newRoom } from "@/backend/controllers/room";
 import { createEdgeRouter } from "next-connect";
 import { NextRequest } from "next/server";
 
@@ -9,8 +9,8 @@ connectDB();
 
 const router = createEdgeRouter<NextRequest, RequestContext>();
 
-router.get(allRooms);
+router.post(newRoom);
 
-export async function GET(request: NextRequest, ctx: RequestContext) {
+export async function POST(request: NextRequest, ctx: RequestContext) {
   return router.run(request, ctx);
 }

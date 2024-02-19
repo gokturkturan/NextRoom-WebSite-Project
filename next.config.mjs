@@ -2,7 +2,7 @@
 const nextConfig = {
   env: {
     MONGO_URL:
-      "mongodb+srv://gokturkturan:gktrktrn7635@gokturkturan.i5cpvmh.mongodb.net/nextroom?retryWrites=true&w=majority/",
+      "mongodb+srv://gokturkturan:gktrktrn7635@gokturkturan.i5cpvmh.mongodb.net/nextroom?retryWrites=true",
   },
 };
 
