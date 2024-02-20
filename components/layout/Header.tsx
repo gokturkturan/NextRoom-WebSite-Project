@@ -9,7 +9,7 @@ const Header = () => {
             <a href="/">
               <img
                 style={{ cursor: "pointer" }}
-                src="images/nextroom.png"
+                src="/images/nextroom.png"
                 alt="NextRoom"
               />
             </a>
@@ -27,7 +27,7 @@ const Header = () => {
             >
               <figure className="avatar avatar-nav">
                 <img
-                  src="images/default_avatar.jpg"
+                  src="/images/default_avatar.jpg"
                   alt="John Doe"
                   className="rounded-circle placeholder-glow"
                   height="50"
