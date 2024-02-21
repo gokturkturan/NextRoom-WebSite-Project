@@ -187,18 +187,13 @@ body {
   border-color: #ff26a0;
   color: white;
   margin-top: 2.5rem;
+  border-radius: 8px;
   font-weight: bold;
-  --bs-btn-active-bg: #b02a37;
-  --bs-btn-active-color: #fff;
-  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-  --bs-btn-disabled-color: #fff;
-  --bs-btn-disabled-bg: #dc3545;
-  --bs-btn-disabled-border-color: #dc3545;
 }
 
 .form-btn:hover {
-  background-color: #bb2d3b;
-  border-color: #bb2d3b;
+  background-color: #6b0342;
+  border-color: #6b0342;
   color: white;
 }
 
@@ -300,7 +295,7 @@ nav {
 }
 
 .card-body .view-btn:hover {
-  background-color: #ff26a0;
+  background-color: #6b0342;
   color: white;
 }
 

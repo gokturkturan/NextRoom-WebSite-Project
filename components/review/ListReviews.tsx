@@ -9,7 +9,7 @@ const ListReviews = () => {
         <div className="row">
           <div className="col-3 col-lg-1">
             <img
-              src="./images/avatar.jpg"
+              src="/images/default_avatar.jpg"
               alt="John Doe"
               width="60"
               height="60"

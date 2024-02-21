@@ -25,7 +25,7 @@ const RoomItem = ({ room }: Props) => {
           </h5>
           <div className="mt-auto">
             <p className="card-text mt-2">
-              <b>{room?.pricePerNight}</b> / night
+              <b>${room?.pricePerNight}</b> / night
             </p>
           </div>
           <div>
