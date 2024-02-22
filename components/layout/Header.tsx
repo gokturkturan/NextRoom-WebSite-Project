@@ -50,7 +50,11 @@ const Header = () => {
               >
                 <figure className="avatar avatar-nav">
                   <img
-                    src="/images/default_avatar.jpg"
+                    src={
+                      user.avatar
+                        ? user?.avatar?.Location
+                        : "/images/default_avatar.jpg"
+                    }
                     alt="John Doe"
                     className="rounded-circle placeholder-glow"
                     height="50"
