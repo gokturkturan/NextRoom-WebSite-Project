@@ -17,7 +17,7 @@ export const catchAsyncErrors =
       }
 
       if (error?.name === "ValidationError") {
-        error.message = Object.values<IValidationError>(error.error).map(
+        error.message = Object.values<IValidationError>(error.errors).map(
           (value) => value.message
         );
         error.statusCode = 400;
