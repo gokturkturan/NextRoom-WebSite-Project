@@ -47,7 +47,7 @@ export interface IRoom extends Document {
   createdAt: Date;
 }
 
-const roomSchema: Schema = new Schema({
+const roomSchema: Schema<IRoom> = new Schema({
   name: {
     type: String,
     required: [true, "Please enter room name"],
