@@ -4,6 +4,9 @@ import User from "../models/user";
 import ErrorHandler from "../utils/errorHandler";
 import S3 from "aws-sdk/clients/s3.js";
 import { nanoid } from "nanoid";
+import SES from "aws-sdk/clients/ses.js";
+import emailTemplate from "../utils/email";
+import crypto from "crypto";
 
 const awsConfig = {
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -12,6 +15,7 @@ const awsConfig = {
   apiVersion: "2010-12-01",
 };
 
+const awsSes = new SES(awsConfig);
 const awsS3 = new S3(awsConfig);
 
 // POST /api/auth/register
@@ -66,6 +70,7 @@ export const updatePassword = catchAsyncErrors(async (req: NextRequest) => {
   });
 });
 
+// POST /api/me/upload_avatar
 export const uploadAvatar = catchAsyncErrors(async (req: NextRequest) => {
   const body = await req.json();
 
@@ -109,3 +114,78 @@ export const uploadAvatar = catchAsyncErrors(async (req: NextRequest) => {
     success: true,
   });
 });
+
+// POST api/password/forgot
+export const forgotPassword = catchAsyncErrors(async (req: NextRequest) => {
+  const body = await req.json();
+
+  const user = await User.findOne({ email: body.email });
+
+  if (!user) throw new ErrorHandler("User not found with this email", 404);
+
+  const resetToken = user.getResetPasswordToken();
+
+  await user.save();
+
+  const resetUrl = `${process.env.API_URL}/password/reset/${resetToken}`;
+
+  const data = await awsSes
+    .sendEmail(
+      emailTemplate(
+        user,
+        resetUrl,
+        process.env.EMAIL_FROM!,
+        `Activate Your Account`
+      )
+    )
+    .promise();
+
+  if (!data) {
+    user.resetPasswordExpire = undefined;
+    user.resetPasswordToken = undefined;
+    user.save();
+  }
+
+  return NextResponse.json({
+    success: true,
+  });
+});
+
+// POST api/password/reset/:resetToken
+export const resetPassword = catchAsyncErrors(
+  async (req: NextRequest, { params }: { params: { resetToken: string } }) => {
+    const body = await req.json();
+
+    const { password, confirmPassword } = body;
+
+    const resetPasswordToken = crypto
+      .createHash("sha256")
+      .update(params.resetToken)
+      .digest("hex");
+
+    const user = await User.findOne({
+      resetPasswordToken,
+      resetPasswordExpire: { $gt: Date.now() },
+    });
+
+    if (!user)
+      throw new ErrorHandler(
+        "Password reset token is invalid or has been expired",
+        404
+      );
+
+    if (password !== confirmPassword)
+      throw new ErrorHandler("Passwords does not match", 400);
+
+    user.password = body.password;
+
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+
+    await user.save();
+
+    return NextResponse.json({
+      success: true,
+    });
+  }
+);
