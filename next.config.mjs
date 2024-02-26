@@ -8,8 +8,8 @@ const nextConfig = {
     NEXTAUTH_URL: "http://localhost:3000",
     EMAIL_FROM: "gktrktrn673@gmail.com",
     REPLY_TO: "gktrktrn673@gmail.com",
-    AWS_ACCESS_KEY_ID: "",
-    AWS_SECRET_ACCESS_KEY_ID: "",
+    AWS_ACCESS_KEY_ID: "AKIAWPZAQMVOLNMIUOZM",
+    AWS_SECRET_ACCESS_KEY_ID: "cPpIvR5F+FbhZC880I5cn+cQJx5UrjLqUNLgfyZI",
   },
 };
 
