@@ -10,11 +10,7 @@ interface Props {
 }
 
 const NewPasswordPage = ({ params }: Props) => {
-  return (
-    <div>
-      <NewPassword resetToken={params?.resetToken} />
-    </div>
-  );
+  return <NewPassword resetToken={params?.resetToken} />;
 };
 
 export default NewPasswordPage;

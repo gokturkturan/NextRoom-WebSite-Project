@@ -6,11 +6,7 @@ export const metadata = {
 };
 
 const UpdateProfilePage = () => {
-  return (
-    <div>
-      <UpdateProfile />
-    </div>
-  );
+  return <UpdateProfile />;
 };
 
 export default UpdateProfilePage;

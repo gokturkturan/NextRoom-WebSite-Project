@@ -16,11 +16,7 @@ export default async function RoomDetailsPage({ params }: Props) {
     return <Error error={data} />;
   }
 
-  return (
-    <div className="container">
-      <RoomDetails data={data} />
-    </div>
-  );
+  return <RoomDetails data={data} />;
 }
 
 export async function generateMetadata({ params }: Props) {

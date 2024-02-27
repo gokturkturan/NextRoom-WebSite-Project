@@ -22,9 +22,5 @@ export default async function HomePage({
     return <Error error={data} />;
   }
 
-  return (
-    <div className="container">
-      <Home data={data} />
-    </div>
-  );
+  return <Home data={data} />;
 }

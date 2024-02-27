@@ -6,11 +6,7 @@ export const metadata = {
 };
 
 const UpdatePasswordPage = () => {
-  return (
-    <div>
-      <UpdatePassword />
-    </div>
-  );
+  return <UpdatePassword />;
 };
 
 export default UpdatePasswordPage;

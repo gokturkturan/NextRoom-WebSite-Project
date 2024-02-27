@@ -6,11 +6,7 @@ export const metadata = {
 };
 
 const UploadAvatarPage = () => {
-  return (
-    <div>
-      <UploadAvatar />
-    </div>
-  );
+  return <UploadAvatar />;
 };
 
 export default UploadAvatarPage;

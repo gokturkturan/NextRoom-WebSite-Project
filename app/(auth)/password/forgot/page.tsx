@@ -7,11 +7,7 @@ export const metadata = {
 };
 
 const ForgotPasswordPage = () => {
-  return (
-    <div>
-      <ForgotPassword />
-    </div>
-  );
+  return <ForgotPassword />;
 };
 
 export default ForgotPasswordPage;

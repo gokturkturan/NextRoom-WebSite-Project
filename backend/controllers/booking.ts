@@ -3,6 +3,7 @@ import { catchAsyncErrors } from "../middlewares/catchAsyncErrors";
 import Booking, { IBooking } from "../models/booking";
 import Moment from "moment";
 import { extendMoment } from "moment-range";
+import ErrorHandler from "../utils/errorHandler";
 
 const moment = extendMoment(Moment);
 
@@ -32,7 +33,7 @@ export const newBooking = catchAsyncErrors(async (req: NextRequest) => {
   return NextResponse.json({ booking });
 });
 
-// GET /api/booking/check
+// GET /api/booking/check_rooom_availability
 export const checkRoomAvailability = catchAsyncErrors(
   async (req: NextRequest) => {
     const { searchParams } = new URL(req.url);
@@ -86,3 +87,24 @@ export const getRoomBookedDates = catchAsyncErrors(async (req: NextRequest) => {
 
   return NextResponse.json({ bookedDates });
 });
+
+// GET /api/booking/me
+export const myBookings = catchAsyncErrors(async (req: NextRequest) => {
+  const bookings = await Booking.find({
+    user: req.user._id,
+  });
+
+  return NextResponse.json({ bookings });
+});
+
+// GET /api/booking/:id
+export const getBookingDetails = catchAsyncErrors(
+  async (req: NextRequest, { params }: { params: { id: "string" } }) => {
+    const booking = await Booking.findById(params.id).populate("room user");
+
+    if (booking.user._id.toString() !== req.user._id)
+      throw new ErrorHandler("You cannot view this booking", 403);
+
+    return NextResponse.json({ booking });
+  }
+);
