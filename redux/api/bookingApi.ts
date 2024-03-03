@@ -29,6 +29,19 @@ export const bookingApi = createApi({
         };
       },
     }),
+    stripeCheckout: builder.query({
+      query({ id, checkoutData }) {
+        return {
+          url: `/payment/checkout_session/${id}`,
+          params: {
+            checkInDate: checkoutData.checkInDate,
+            checkOutDate: checkoutData.checkOutDate,
+            daysOfStay: checkoutData.daysOfStay,
+            amount: checkoutData.amount,
+          },
+        };
+      },
+    }),
   }),
 });
 
@@ -36,4 +49,5 @@ export const {
   useNewBookingMutation,
   useLazyCheckRoomAvailabilityQuery,
   useGetRoomBookedDatesQuery,
+  useLazyStripeCheckoutQuery,
 } = bookingApi;

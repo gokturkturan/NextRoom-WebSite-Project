@@ -10,6 +10,8 @@ const nextConfig = {
     REPLY_TO: "gktrktrn673@gmail.com",
     AWS_ACCESS_KEY_ID: "",
     AWS_SECRET_ACCESS_KEY_ID: "",
+    STRIPE_SECRET_KEY: "",
+    STRIPE_WEBHOOK_SECRET: "",
   },
 };
 

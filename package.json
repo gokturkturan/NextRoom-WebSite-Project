@@ -30,7 +30,8 @@
     "react-hot-toast": "^2.4.1",
     "react-js-pagination": "^3.0.3",
     "react-redux": "^9.1.0",
-    "react-star-ratings": "^2.3.0"
+    "react-star-ratings": "^2.3.0",
+    "stripe": "^14.19.0"
   },
   "devDependencies": {
     "@types/node": "^20",
