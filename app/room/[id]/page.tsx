@@ -6,7 +6,9 @@ interface Props {
 }
 
 const getRoom = async (id: string) => {
-  const res = await fetch(`${process.env.API_URL}/api/room/${id}`);
+  const res = await fetch(`${process.env.API_URL}/api/room/${id}`, {
+    cache: "no-cache",
+  });
   return res.json();
 };
 

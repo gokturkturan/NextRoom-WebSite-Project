@@ -25,7 +25,7 @@ const RoomDetails = ({ data }: Props) => {
       <div className="ratings mt-auto mb-3">
         <StarRatings
           rating={room?.ratings}
-          starRatedColor="#FF26A0"
+          starRatedColor="#FFDF00"
           numberOfStars={5}
           starDimension="22px"
           starSpacing="1px"
@@ -48,8 +48,8 @@ const RoomDetails = ({ data }: Props) => {
           <BookingDatePicker room={room} />
         </div>
       </div>
-      <NewReview />
-      <ListReviews />
+      <NewReview roomId={room._id} />
+      <ListReviews reviews={room.reviews} />
     </div>
   );
 };

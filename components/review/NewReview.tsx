@@ -1,16 +1,55 @@
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import {
+  useCanUserReviewQuery,
+  usePostReviewMutation,
+} from "@/redux/api/roomApi";
+import toast from "react-hot-toast";
+import StarRatings from "react-star-ratings";
 
-const NewReview = () => {
+const NewReview = ({ roomId }: { roomId: string }) => {
+  const router = useRouter();
+
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
+
+  const [postReview, { error, isSuccess }] = usePostReviewMutation();
+
+  const { data: { canReview } = {} } = useCanUserReviewQuery(roomId);
+
+  useEffect(() => {
+    if (error && "data" in error) {
+      toast.error(error.data.errMessage);
+    }
+
+    if (isSuccess) {
+      toast.success("Review posted");
+      router.refresh();
+    }
+  }, [error, isSuccess]);
+
+  const submitHandler = () => {
+    const reviewData = {
+      rating,
+      comment,
+      roomId,
+    };
+
+    postReview(reviewData);
+  };
+
   return (
     <>
-      <button
-        type="button"
-        className="form-btn mt-4 mb-5"
-        data-bs-toggle="modal"
-        data-bs-target="#ratingModal"
-      >
-        Submit Your Review
-      </button>
+      {canReview && (
+        <button
+          type="button"
+          className="form-btn mt-4 mb-5"
+          data-bs-toggle="modal"
+          data-bs-target="#ratingModal"
+        >
+          Submit Your Review
+        </button>
+      )}
       <div
         className="modal fade"
         id="ratingModal"
@@ -33,18 +72,32 @@ const NewReview = () => {
               ></button>
             </div>
             <div className="modal-body">
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla
-                consectetur, mi nec tristique vehicula, elit tellus vulputate
-                ex, nec bibendum libero elit at orci.
-              </p>
+              <StarRatings
+                rating={rating}
+                starRatedColor="#FFDF00"
+                numberOfStars={5}
+                name="rating"
+                changeRating={(e: any) => setRating(e)}
+              />
+              <div className="form-floating">
+                <textarea
+                  id="review_field"
+                  placeholder="Leave your review"
+                  className="form-control mt-4"
+                  style={{ height: "100px" }}
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                ></textarea>
+                <label htmlFor="review_field">Comment</label>
+              </div>
             </div>
             <div className="modal-footer">
               <button
                 type="button"
-                className="btn my-3 form-btn w-100"
+                className="my-3 form-btn w-100"
                 data-bs-dismiss="modal"
                 aria-label="Close"
+                onClick={submitHandler}
               >
                 Submit
               </button>

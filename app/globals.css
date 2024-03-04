@@ -395,6 +395,10 @@ footer {
   color: green;
 }
 
+.pinkColor {
+  color: #ff26a0;
+}
+
 /* Sidebar */
 
 .list-group-item:first-child {
