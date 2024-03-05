@@ -19,3 +19,18 @@ export const isAuth = async (req: NextRequest, event: any, next: any) => {
 
   return next();
 };
+
+export const authorizeRoles = (...roles: string[]) => {
+  return (req: NextRequest, event: any, next: any) => {
+    if (!roles.includes(req.user.role)) {
+      return NextResponse.json(
+        {
+          errMessage: `Role (${req.user.role}) is now allowed to access this resource.`,
+        },
+        { status: 403 }
+      );
+    }
+
+    return next();
+  };
+};
