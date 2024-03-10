@@ -1,5 +1,6 @@
 import { connectDB } from "@/backend/config/connectDB";
 import { updateRoom, deleteRoom } from "@/backend/controllers/room";
+import { authorizeRoles, isAuth } from "@/backend/middlewares/auth";
 import { createEdgeRouter } from "next-connect";
 import { NextRequest } from "next/server";
 
@@ -13,8 +14,8 @@ const router = createEdgeRouter<NextRequest, RequestContext>();
 
 connectDB();
 
-router.put(updateRoom);
-router.delete(deleteRoom);
+router.use(isAuth, authorizeRoles("admin")).put(updateRoom);
+router.use(isAuth, authorizeRoles("admin")).delete(deleteRoom);
 
 export async function PUT(request: NextRequest, ctx: RequestContext) {
   return router.run(request, ctx);

@@ -102,14 +102,6 @@ export const uploadAvatar = catchAsyncErrors(async (req: NextRequest) => {
 
   await User.findByIdAndUpdate(req.user._id, userData);
 
-  if (req.user.avatar?.Location) {
-    const Bucket = req.user.avatar.Bucket;
-    const Key = req.user.avatar.Key;
-    const data = await awsS3.deleteObject({ Bucket, Key }).promise();
-
-    if (!data) throw new ErrorHandler("Deletion failed. Try again.", 400);
-  }
-
   return NextResponse.json({
     success: true,
   });

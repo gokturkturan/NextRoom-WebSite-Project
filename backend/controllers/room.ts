@@ -36,6 +36,8 @@ export const allRooms = catchAsyncErrors(async (req: NextRequest) => {
 export const newRoom = catchAsyncErrors(async (req: NextRequest) => {
   const body = await req.json();
 
+  body.user = req.user._id;
+
   const room = await Room.create(body);
 
   return NextResponse.json({ success: true, room });
@@ -43,7 +45,7 @@ export const newRoom = catchAsyncErrors(async (req: NextRequest) => {
 
 // GET /api/room/:id
 export const getRoomDetails = catchAsyncErrors(
-  async (req: NextRequest, { params }: { params: { id: "string" } }) => {
+  async (req: NextRequest, { params }: { params: { id: string } }) => {
     const room = await Room.findById(params.id).populate("reviews.user");
 
     if (!room) {
@@ -56,7 +58,7 @@ export const getRoomDetails = catchAsyncErrors(
 
 // PUT /api/admin/room/:id
 export const updateRoom = catchAsyncErrors(
-  async (req: NextRequest, { params }: { params: { id: "string" } }) => {
+  async (req: NextRequest, { params }: { params: { id: string } }) => {
     let room = await Room.findById(params.id);
     const body = await req.json();
 
@@ -72,7 +74,7 @@ export const updateRoom = catchAsyncErrors(
 
 // DELETE /api/admin/room/:id
 export const deleteRoom = catchAsyncErrors(
-  async (req: NextRequest, { params }: { params: { id: "string" } }) => {
+  async (req: NextRequest, { params }: { params: { id: string } }) => {
     let room = await Room.findById(params.id);
 
     if (!room) {
@@ -140,4 +142,11 @@ export const canReview = catchAsyncErrors(async (req: NextRequest) => {
   const canReview = bookings.length > 0 ? true : false;
 
   return NextResponse.json({ canReview });
+});
+
+// GET /api/admin/room
+export const getAllRooms = catchAsyncErrors(async (req: NextRequest) => {
+  const rooms = await Room.find();
+
+  return NextResponse.json({ rooms });
 });

@@ -6,9 +6,7 @@ export const metadata = { title: "HomePage - NextRoom" };
 const getRooms = async (searchParams: string) => {
   const urlParams = new URLSearchParams(searchParams);
   const queryString = urlParams.toString();
-  const res = await fetch(`${process.env.API_URL}/api/room?${queryString}`, {
-    cache: "no-cache",
-  });
+  const res = await fetch(`${process.env.API_URL}/api/room?${queryString}`);
   return res.json();
 };
 
