@@ -14,7 +14,11 @@ const RoomItem = ({ room }: Props) => {
       <div className="card p-2 w-100">
         <img
           className="card-img-top mx-auto"
-          src="images/default_room_image.jpg"
+          src={
+            room.images.length > 0
+              ? room.images[0].Location
+              : "images/default_room_image.jpg"
+          }
           alt={room?.name}
           height={170}
           width={100}

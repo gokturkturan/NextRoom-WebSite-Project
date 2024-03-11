@@ -1,9 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import Room, { IReview, IRoom } from "../models/room";
+import Room, { IImage, IReview, IRoom } from "../models/room";
 import { catchAsyncErrors } from "../middlewares/catchAsyncErrors";
 import ErrorHandler from "../utils/errorHandler";
 import APIFilters from "../utils/apiFilters";
 import Booking from "../models/booking";
+import { nanoid } from "nanoid";
+import S3 from "aws-sdk/clients/s3.js";
+
+const awsConfig = {
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY_ID,
+  region: "eu-north-1",
+  apiVersion: "2010-12-01",
+};
+
+const awsS3 = new S3(awsConfig);
 
 // GET /api/room
 export const allRooms = catchAsyncErrors(async (req: NextRequest) => {
@@ -72,6 +83,83 @@ export const updateRoom = catchAsyncErrors(
   }
 );
 
+// PUT /api/admin/room/:id/upload_images
+export const uploadRoomImages = catchAsyncErrors(
+  async (req: NextRequest, { params }: { params: { id: string } }) => {
+    const room = await Room.findById(params.id);
+    const body = await req.json();
+
+    if (!room) {
+      throw new ErrorHandler("Room not found", 404);
+    }
+
+    const { images } = body;
+
+    const parameters = images.map((img: any) => {
+      const base64Image = Buffer.from(
+        img.replace(/^data:image\/\w+;base64,/, ""),
+        "base64"
+      );
+
+      const type = img.split(";")[0].split("/")[1];
+
+      const param = {
+        Bucket: "nextroom3",
+        Key: `${nanoid()}.${type}`,
+        Body: base64Image,
+        ACL: "public-read",
+        ContentEncoding: "base64",
+        ContentType: `image/${type}`,
+      };
+
+      return param;
+    });
+
+    for (const param of parameters) {
+      try {
+        const data = await awsS3.upload(param).promise();
+        if (!data) throw new ErrorHandler("Upload failed. Try again.", 400);
+        room.images.push(data);
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        throw new ErrorHandler("Error uploading image", 500);
+      }
+    }
+
+    await room.save();
+
+    return NextResponse.json({ success: true });
+  }
+);
+
+// DELETE /api/admin/room/:id/delete_image
+export const deleteRoomImage = catchAsyncErrors(
+  async (req: NextRequest, { params }: { params: { id: string } }) => {
+    const room = await Room.findById(params.id);
+    const body = await req.json();
+
+    if (!room) {
+      throw new ErrorHandler("Room not found", 404);
+    }
+
+    const { image } = body;
+    const { Key, Bucket } = image;
+
+    try {
+      const data = await awsS3.deleteObject({ Key, Bucket }).promise();
+      if (!data) throw new ErrorHandler("Deletion failed. Try again.", 400);
+      room.images = room.images.filter((img: IImage) => img.Key !== Key);
+    } catch (error) {
+      console.error("Error deleting image:", error);
+      throw new ErrorHandler("Error deleting image", 500);
+    }
+
+    await room.save();
+
+    return NextResponse.json({ success: true });
+  }
+);
+
 // DELETE /api/admin/room/:id
 export const deleteRoom = catchAsyncErrors(
   async (req: NextRequest, { params }: { params: { id: string } }) => {
@@ -79,6 +167,15 @@ export const deleteRoom = catchAsyncErrors(
 
     if (!room) {
       throw new ErrorHandler("Room not found", 404);
+    }
+
+    for (let i = 0; i < room?.images?.length; i++) {
+      await awsS3
+        .deleteObject({
+          Key: room.images[i].Key,
+          Bucket: room.images[i].Bucket,
+        })
+        .promise();
     }
 
     await room.deleteOne();

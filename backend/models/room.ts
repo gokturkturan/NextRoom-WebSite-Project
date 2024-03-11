@@ -6,6 +6,7 @@ export interface IImage extends Document {
   Key: string;
   Body: Buffer;
   ACL: string;
+  Location: string;
   ContentEncoding: string;
   ContentType: string;
 }

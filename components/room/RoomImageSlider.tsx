@@ -7,6 +7,7 @@ interface Props {
   images: IImage[];
 }
 const RoomImageSlider = ({ images }: Props) => {
+  console.log(images);
   return (
     <Carousel>
       {images?.length > 0 ? (
@@ -15,8 +16,8 @@ const RoomImageSlider = ({ images }: Props) => {
             <div style={{ widows: "100%", height: "460px" }}>
               <Image
                 className="d-block m-auto"
-                src={img.Bucket}
-                alt={img.Bucket}
+                src={img.Location}
+                alt={img.Location}
                 layout="fill"
               />
             </div>

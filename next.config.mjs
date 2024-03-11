@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  images: {
+    domains: ["nextroom3.s3.eu-north-1.amazonaws.com"],
+  },
   env: {
     API_URL: "http://localhost:3000",
     MONGO_URL:
