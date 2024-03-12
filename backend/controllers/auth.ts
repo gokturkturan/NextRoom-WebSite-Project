@@ -181,3 +181,68 @@ export const resetPassword = catchAsyncErrors(
     });
   }
 );
+
+// GET /api/admin/user
+export const getAllUsers = catchAsyncErrors(async (req: NextRequest) => {
+  const users = await User.find();
+
+  return NextResponse.json({
+    users,
+  });
+});
+
+// GET /api/admin/user/:id
+export const getUser = catchAsyncErrors(
+  async (req: NextRequest, { params }: { params: { id: string } }) => {
+    const user = await User.findById(params.id);
+
+    if (!user) throw new ErrorHandler("User not found with this ID", 404);
+
+    return NextResponse.json({
+      user,
+    });
+  }
+);
+
+// PUT /api/admin/user/:id
+export const updateUser = catchAsyncErrors(
+  async (req: NextRequest, { params }: { params: { id: string } }) => {
+    const body = await req.json();
+
+    const newUserData = {
+      name: body.name,
+      email: body.email,
+      role: body.role,
+    };
+
+    const user = await User.findByIdAndUpdate(params.id, newUserData);
+
+    return NextResponse.json({
+      user,
+    });
+  }
+);
+
+// DELETE /api/admin/user/:id
+export const deleteUser = catchAsyncErrors(
+  async (req: NextRequest, { params }: { params: { id: string } }) => {
+    const user = await User.findById(params.id);
+
+    if (!user) throw new ErrorHandler("User not found with this ID", 404);
+
+    if (user.avatar) {
+      await awsS3
+        .deleteObject({
+          Key: user.avatar.Key,
+          Bucket: user.avatar.Bucket,
+        })
+        .promise();
+    }
+
+    await user.deleteOne();
+
+    return NextResponse.json({
+      success: true,
+    });
+  }
+);

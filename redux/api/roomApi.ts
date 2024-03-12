@@ -5,6 +5,7 @@ export const roomApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: "/api",
   }),
+  tagTypes: ["Reviews"],
   endpoints: (builder) => ({
     postReview: builder.mutation({
       query(body) {
@@ -66,6 +67,23 @@ export const roomApi = createApi({
         };
       },
     }),
+    getRoomReviews: builder.query({
+      query(id) {
+        return {
+          url: `admin/room/reviews?roomId=${id}`,
+        };
+      },
+      providesTags: ["Reviews"],
+    }),
+    deleteReview: builder.mutation({
+      query({ id, roomId }) {
+        return {
+          url: `/admin/room/reviews/?id=${id}&roomId=${roomId}`,
+          method: "DELETE",
+        };
+      },
+      invalidatesTags: ["Reviews"],
+    }),
   }),
 });
 
@@ -77,4 +95,6 @@ export const {
   useUploadRoomImagesMutation,
   useDeleteRoomImageMutation,
   useDeleteRoomMutation,
+  useLazyGetRoomReviewsQuery,
+  useDeleteReviewMutation,
 } = roomApi;

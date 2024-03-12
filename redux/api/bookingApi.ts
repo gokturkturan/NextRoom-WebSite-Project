@@ -49,6 +49,14 @@ export const bookingApi = createApi({
         };
       },
     }),
+    deleteBooking: builder.mutation({
+      query({ id }) {
+        return {
+          url: `/admin/booking/${id}`,
+          method: "DELETE",
+        };
+      },
+    }),
   }),
 });
 
@@ -58,4 +66,5 @@ export const {
   useGetRoomBookedDatesQuery,
   useLazyStripeCheckoutQuery,
   useLazyGetSalesStatsQuery,
+  useDeleteBookingMutation,
 } = bookingApi;

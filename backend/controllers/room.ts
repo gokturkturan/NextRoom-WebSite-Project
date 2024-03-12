@@ -247,3 +247,43 @@ export const getAllRooms = catchAsyncErrors(async (req: NextRequest) => {
 
   return NextResponse.json({ rooms });
 });
+
+// GET /api/admin/room/reviews
+export const getRoomReviews = catchAsyncErrors(async (req: NextRequest) => {
+  const { searchParams } = new URL(req.url);
+
+  const room = await Room.findById(searchParams.get("roomId"));
+
+  return NextResponse.json({
+    reviews: room.reviews,
+  });
+});
+
+// DELETE /api/admin/room/reviews
+export const deleteRoomReview = catchAsyncErrors(async (req: NextRequest) => {
+  const { searchParams } = new URL(req.url);
+
+  const roomId = searchParams.get("roomId");
+  const reviewId = searchParams.get("id");
+
+  const room = await Room.findById(roomId);
+
+  const reviews = room.reviews.filter(
+    (review: IReview) => review?._id.toString() !== reviewId
+  );
+  const numOfReviews = reviews.length;
+
+  const ratings =
+    numOfReviews === 0
+      ? 0
+      : room?.reviews?.reduce(
+          (acc: number, item: { rating: number }) => item.rating + acc,
+          0
+        ) / numOfReviews;
+
+  await Room.findByIdAndUpdate(roomId, { reviews, numOfReviews, ratings });
+
+  return NextResponse.json({
+    success: true,
+  });
+});

@@ -7,7 +7,6 @@ interface Props {
   images: IImage[];
 }
 const RoomImageSlider = ({ images }: Props) => {
-  console.log(images);
   return (
     <Carousel>
       {images?.length > 0 ? (
